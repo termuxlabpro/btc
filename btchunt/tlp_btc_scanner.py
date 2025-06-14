@@ -1,3 +1,9 @@
+"""
+MIT License (c) 2025 Termux Lab Pro
+YouTube: https://youtube.com/@termuxlabpro
+Telegram: https://t.me/termuxlabpro
+"""
+
 import os
 import requests
 import random
@@ -19,12 +25,15 @@ def banner():
         "   ██║   ██║     ██╔═══╝ ",
         "   ██║   ███████╗██║     ",
         "   ╚═╝   ╚══════╝╚═╝     ",
-        Fore.CYAN + "      T E R M U X  L A B  P R O",
-        Fore.MAGENTA + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+        Fore.CYAN + "\n╔═══════════════════════════════╗",
+        Fore.CYAN + "║         " + Fore.MAGENTA + "T . L . P" + Fore.CYAN + "             ║",
+        Fore.CYAN + "║     Termux Lab Pro            ║",
+        Fore.CYAN + "╚═══════════════════════════════╝",
+        Fore.MAGENTA + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     ]
     for line in art:
         print(line)
-        time.sleep(0.07)
+        time.sleep(0.05)
 
 def generate_private_key():
     return ''.join(random.choice('0123456789abcdef') for _ in range(64))
@@ -66,13 +75,12 @@ def bech32_address(pubkey_bytes):
 
 def get_balance(addr):
     try:
-        res = requests.get(f'https://blockchain.info/q/addressbalance/{addr}')
+        res = requests.get(f'https://blockchain.info/q/addressbalance/{addr}', timeout=10)
         return int(res.text) / 1e8
     except:
         return -1
 
-def main():
-    banner()
+def scan_once():
     priv = generate_private_key()
     print(Fore.YELLOW + "[+] Private Key:", priv)
     print(Fore.MAGENTA + "[+] WIF (Compressed):", wif_from_private_key(priv, True))
@@ -103,7 +111,15 @@ def main():
         print(Fore.CYAN + "📺 YouTube : https://youtube.com/@termuxlabpro")
         print(Fore.CYAN + "💬 Telegram: https://t.me/termuxlabpro\n")
     else:
-        print(Fore.LIGHTBLACK_EX + "[x] No balances found in any derived address.\n")
+        print(Fore.LIGHTBLACK_EX + "[x] No balances found.\n")
+
+    print(Fore.BLUE + "🔁 Scanning next key...\n")
+    time.sleep(1)
+
+def main():
+    banner()
+    while True:
+        scan_once()
 
 if __name__ == "__main__":
     main()
