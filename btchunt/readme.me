@@ -1,0 +1,106 @@
+💣 T.L.P Bitcoin Private Key Scanner
+
+Welcome to Termux Lab Pro's educational tool for exploring Bitcoin private keys and address formats!
+
+⚙️ What This Script Does
+
+This script runs endlessly to generate random Bitcoin private keys, derive all major types of Bitcoin addresses from them, check balances in real-time, and log any "hit" (non-zero balance) to a local text file.
+
+🔧 Features
+
+✅ Real Private Key Generation
+
+Securely generates a 64-character hexadecimal Bitcoin private key.
+
+Converts the private key into:
+
+Compressed WIF
+
+Uncompressed WIF
+
+✅ Full Address Derivation
+
+From one private key, the script derives all major Bitcoin address types:
+
+Legacy (Uncompressed): 1...
+
+Legacy (Compressed): 1...
+
+P2SH (Compatibility SegWit): 3...
+
+Bech32 (Native SegWit): bc1...
+
+✅ Real-Time Balance Checking
+
+Uses blockchain.info API to check each address's BTC balance.
+
+Displays balances clearly and color-coded.
+
+✅ Infinite Auto Scanning Loop
+
+Keeps scanning private keys automatically.
+
+Never stops unless the user interrupts the process.
+
+✅ Save Positive Results
+
+When any address has a balance, the script saves the following into found_keys.txt:
+
+Private key
+
+WIF keys
+
+All derived addresses
+
+Balance of each address
+
+✅ Hacker-Themed Animated Interface
+
+Stylish ASCII Art: T.L.P (Termux Lab Pro)
+
+Realistic animation delay for pro look
+
+Color-coded outputs:
+
+🟢 Green for addresses with BTC
+
+🔴 Red for addresses with 0 BTC
+
+🔵 Cyan for branding
+
+✅ Smart Branding
+
+Shows Termux Lab Pro branding only when BTC is found:
+
+📺 YouTube: https://youtube.com/@termuxlabpro
+
+💬 Telegram: https://t.me/termuxlabpro
+
+📲 Installation Commands for Termux
+
+pkg update && pkg upgrade
+pkg install python git -y
+pip install ecdsa base58 bech32 colorama
+
+git clone https://github.com/termuxlabpro/btc.git
+cd btc/btchunt
+python tlp_btc_scanner.py
+
+⚠️ Legal Disclaimer
+
+This tool is developed strictly for educational and ethical hacking purposes.
+
+❗ Brute-forcing Bitcoin private keys is mathematically impossible and legally punishable.
+
+❗ Termux Lab Pro is not responsible for misuse of this tool.
+
+Use this script only to learn how Bitcoin works under the hood. Learn responsibly.
+
+🚀 Developed By
+
+Termux Lab Pro
+
+📺 YouTube: https://youtube.com/@termuxlabpro
+
+💬 Telegram: https://t.me/termuxlabpro
+
