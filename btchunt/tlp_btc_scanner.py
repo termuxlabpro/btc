@@ -80,26 +80,43 @@ def get_balance(addr):
     except:
         return -1
 
+def save_found_key(priv, wif_c, wif_u, addresses, balances):
+    with open("found_keys.txt", "a") as f:
+        f.write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+        f.write(f"Private Key     : {priv}\n")
+        f.write(f"WIF Compressed : {wif_c}\n")
+        f.write(f"WIF Uncompressed : {wif_u}\n")
+        for label in addresses:
+            f.write(f"{label}: {addresses[label]}\n")
+            f.write(f" └─ Balance: {balances[label]} BTC\n")
+        f.write("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n")
+
 def scan_once():
     priv = generate_private_key()
+    wif_c = wif_from_private_key(priv, True)
+    wif_u = wif_from_private_key(priv, False)
+
     print(Fore.YELLOW + "[+] Private Key:", priv)
-    print(Fore.MAGENTA + "[+] WIF (Compressed):", wif_from_private_key(priv, True))
-    print(Fore.CYAN + "[+] WIF (Uncompressed):", wif_from_private_key(priv, False))
+    print(Fore.MAGENTA + "[+] WIF (Compressed):", wif_c)
+    print(Fore.CYAN + "[+] WIF (Uncompressed):", wif_u)
     print()
 
-    pub_uncompressed = public_key_from_private(priv, False)
-    pub_compressed = public_key_from_private(priv, True)
+    pub_u = public_key_from_private(priv, False)
+    pub_c = public_key_from_private(priv, True)
 
     addresses = {
-        "Legacy (Uncompressed)": p2pkh_address(pub_uncompressed),
-        "Legacy (Compressed)": p2pkh_address(pub_compressed),
-        "SegWit (P2SH)": p2sh_p2wpkh_address(pub_compressed),
-        "Bech32 (Native SegWit)": bech32_address(pub_compressed)
+        "Legacy (Uncompressed)": p2pkh_address(pub_u),
+        "Legacy (Compressed)": p2pkh_address(pub_c),
+        "SegWit (P2SH)": p2sh_p2wpkh_address(pub_c),
+        "Bech32 (Native SegWit)": bech32_address(pub_c)
     }
 
+    balances = {}
     any_balance = False
+
     for label, addr in addresses.items():
         bal = get_balance(addr)
+        balances[label] = bal
         color = Fore.GREEN if bal > 0 else Fore.RED
         print(color + f"[{label}] {addr}")
         print(color + f" └─ Balance: {bal} BTC\n")
@@ -107,6 +124,7 @@ def scan_once():
             any_balance = True
 
     if any_balance:
+        save_found_key(priv, wif_c, wif_u, addresses, balances)
         print(Fore.CYAN + "\n🔥 T.L.P Script by Termux Lab Pro")
         print(Fore.CYAN + "📺 YouTube : https://youtube.com/@termuxlabpro")
         print(Fore.CYAN + "💬 Telegram: https://t.me/termuxlabpro\n")
