@@ -28,6 +28,9 @@ def banner():
         Fore.CYAN + "\n╔═══════════════════════════════╗",
         Fore.CYAN + "║         " + Fore.MAGENTA + "T . L . P" + Fore.CYAN + "             ║",
         Fore.CYAN + "║     Termux Lab Pro            ║",
+        Fore.CYAN + "╠═══════════════════════════════╣",
+        Fore.CYAN + "║ " + Fore.YELLOW + "📺 YouTube : " + Fore.WHITE + "youtube.com/@termuxlabpro" + Fore.CYAN + " ║",
+        Fore.CYAN + "║ " + Fore.YELLOW + "💬 Telegram: " + Fore.WHITE + "t.me/termuxlabpro         " + Fore.CYAN + " ║",
         Fore.CYAN + "╚═══════════════════════════════╝",
         Fore.MAGENTA + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
     ]
@@ -132,7 +135,7 @@ def scan_once():
         print(Fore.LIGHTBLACK_EX + "[x] No balances found.\n")
 
     print(Fore.BLUE + "🔁 Scanning next key...\n")
-    time.sleep(1)  # ✅ Delay added between each loop
+    time.sleep(1)
 
 def main():
     banner()
