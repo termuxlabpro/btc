@@ -10,7 +10,6 @@ import random
 import hashlib
 import ecdsa
 import base58
-import bech32
 import time
 from colorama import Fore, init
 
@@ -61,25 +60,17 @@ def p2pkh_address(pubkey_bytes):
     checksum = hashlib.sha256(hashlib.sha256(payload).digest()).digest()[:4]
     return base58.b58encode(payload + checksum).decode()
 
-def p2sh_p2wpkh_address(pubkey_bytes):
-    pub_sha = hashlib.sha256(pubkey_bytes).digest()
-    ripemd = hashlib.new('ripemd160', pub_sha).digest()
-    redeem_script = b'\x00\x14' + ripemd
-    hash160 = hashlib.new('ripemd160', hashlib.sha256(redeem_script).digest()).digest()
-    payload = b'\x05' + hash160
-    checksum = hashlib.sha256(hashlib.sha256(payload).digest()).digest()[:4]
-    return base58.b58encode(payload + checksum).decode()
-
-def bech32_address(pubkey_bytes):
-    pub_sha = hashlib.sha256(pubkey_bytes).digest()
-    ripemd = hashlib.new('ripemd160', pub_sha).digest()
-    five_bit = bech32.convertbits(ripemd, 8, 5)
-    return bech32.encode('bc', 0, five_bit)
-
-def get_balance(addr):
+def get_balance_blockchain_info(addr):
     try:
         res = requests.get(f'https://blockchain.info/q/addressbalance/{addr}', timeout=10)
         return int(res.text) / 1e8
+    except:
+        return -1
+
+def get_balance_blockcypher(addr):
+    try:
+        res = requests.get(f'https://api.blockcypher.com/v1/btc/main/addrs/{addr}/balance', timeout=10)
+        return res.json()['final_balance'] / 1e8
     except:
         return -1
 
@@ -107,19 +98,27 @@ def scan_once():
     pub_u = public_key_from_private(priv, False)
     pub_c = public_key_from_private(priv, True)
 
+    addr_u = p2pkh_address(pub_u)
+    addr_c = p2pkh_address(pub_c)
+
+    balance_u = get_balance_blockchain_info(addr_u)
+    balance_c = get_balance_blockcypher(addr_c)
+
     addresses = {
-        "Legacy (Uncompressed)": p2pkh_address(pub_u),
-        "Legacy (Compressed)": p2pkh_address(pub_c),
-        "SegWit (P2SH)": p2sh_p2wpkh_address(pub_c),
-        "Bech32 (Native SegWit)": bech32_address(pub_c)
+        "Legacy (Uncompressed)": addr_u,
+        "Legacy (Compressed)": addr_c
     }
 
-    balances = {}
+    balances = {
+        "Legacy (Uncompressed)": balance_u,
+        "Legacy (Compressed)": balance_c
+    }
+
     any_balance = False
 
-    for label, addr in addresses.items():
-        bal = get_balance(addr)
-        balances[label] = bal
+    for label in addresses:
+        addr = addresses[label]
+        bal = balances[label]
         color = Fore.GREEN if bal > 0 else Fore.RED
         print(color + f"[{label}] {addr}")
         print(color + f" └─ Balance: {bal} BTC\n")
